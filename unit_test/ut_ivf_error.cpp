@@ -69,13 +69,13 @@ class ErrorTest : public TestBase, public ::testing::Test {
             }
 
             // Calculate relative error and insert into recorder
-            constexpr float kEpsilon = 1e-9f;
-            if (std::abs(true_dist) > kEpsilon) {
-                float relative_err = std::abs(est_dist - true_dist) / std::abs(true_dist);
+            float abs_truth = std::abs(true_dist);
+            if (abs_truth > 0) {
+                float relative_err = std::abs(est_dist - true_dist) / abs_truth;
                 query_error_recorder.insert(relative_err);
-                float fst_relative_err = std::abs(true_dist - fast_dist_list[i]) / std::abs(true_dist);
+                float fst_relative_err = std::abs(true_dist - fast_dist_list[i]) / abs_truth;
                 query_fst_error_recorder.insert(fst_relative_err);
-                float vars_relative_err = std::abs(true_dist - vars_dist_list[i]) / std::abs(true_dist);
+                float vars_relative_err = std::abs(true_dist - vars_dist_list[i]) / abs_truth;
             }
         }
 
@@ -155,12 +155,12 @@ using ErrorTestIP = ErrorTest<DistType::IP>;
 //     testDatasetQuantTypeError("openai1536", config, expected_avg_errors);
 // }
 
-// TEST_F(ErrorTestL2Sqr, SAQ_GIST_AllBits) {
-//     QuantizeConfig config;
-//     std::map<int, std::pair<float, float>> expected_avg_errors =
-//         {{1, {5.88538e-03, 1.5112e-01}}, {4, {5.77164e-04, 1.4452e-01}}, {8, {4.00324e-05, 1.1412e-01}}};
-//     testDatasetQuantTypeError("gist", config, expected_avg_errors);
-// }
+TEST_F(ErrorTestL2Sqr, SAQ_GIST_AllBits) {
+    QuantizeConfig config;
+    std::map<int, std::pair<float, float>> expected_avg_errors =
+        {{1, {5.88538e-03, 1.5112e-01}}, {4, {5.77164e-04, 1.4452e-01}}, {8, {4.00324e-05, 1.1412e-01}}};
+    testDatasetQuantTypeError("gist", config, expected_avg_errors);
+}
 
 // TEST_F(ErrorTestL2Sqr, CAQ_GIST_AllBits) {
 //     QuantizeConfig config;
